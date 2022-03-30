@@ -3,10 +3,11 @@ import sys
 
 class clustering:
 
-    K:           int
-    clusterSize: int
+    K: int
+    M: int
 
-    clusters = []
+    clusters  = []
+    centroid0 = []
 
     def __init__(self) -> None:
         self.getData()
@@ -14,7 +15,10 @@ class clustering:
     def getData(self):
         try:
             with open(sys.argv[1], mode = 'r', encoding = 'utf-8') as file:
-                lines = file.readlines()
+                lines   = file.readlines()
+                self.K  = lines[0][0]
+                self.M  = lines[0][2]
+                self.centroid0 = list(map(float,lines[1].split()))
         except IndexError:
             print("Oops! You forgot to input a file name!")
         except FileNotFoundError:
