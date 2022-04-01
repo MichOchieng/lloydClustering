@@ -58,7 +58,6 @@ class clustering:
         if centroids aren't the same run it back
         '''
         # Centroid to cluster
-        change = False
         tempCluster = self.centroids[:]
         clusters = dict()
         for point in self.data:
@@ -83,6 +82,7 @@ class clustering:
                         clusters[str(centroid)] = []
                         clusters[str(centroid)].append(point)
         # Cluster to centroid
+        change = False
         for i,centriod in enumerate(self.centroids):
             try:
                 self.centroids[i] = np.mean(clusters[str(centriod)],axis = 0)
@@ -93,7 +93,9 @@ class clustering:
         else:
             self.llyod()  
                     
-
+    def initCluster(self,arr):
+        for i in range(self.M):
+            arr.append([])
 
     def getDistance(self,arr0,arr1) -> float:
         x = np.array(arr0)
