@@ -60,46 +60,31 @@ class clustering:
             if centroids aren't the same run it back
         '''
         # Centroid to cluster
-        clusters    = dict()
-
-        # for point in self.data:
-        #     distance      = -1
-        #     prevClusterID = 0
-        #     for i,centroid in enumerate(self.centroids):
-        #         if distance == -1:
-        #             # init
-        #             distance = self.getDistance(centroid,point)
-        #             prevClusterID = i
-        #             clusters[i].append(point)
-        #         elif self.getDistance(centroid,point) < distance:
-        #             distance = self.getDistance(centroid,point)
-        #             # Remove from prev cluster
-        #             clusters[prevClusterID].remove(point)
-        #             # Add to new
-        #             clusters[i].append(point)
-        # print(clusters)
-        prevCent = self.centroids[:]
+        clusters = dict()
+        prevCent = self.centroids[:] # Used to check for change in the centroids later on
         for point in self.data:
             distance = -1
             for centroid in self.centroids:
                 if distance == -1:
+                    # Initialize distance variable
                     distance = self.getDistance(centroid,point)
+                    # Add point to dictionary
                     try:
                         clusters[str(centroid)].append(point)
-                    except KeyError:
+                    except KeyError: # Initialize centroid in the dictionary
                         clusters[str(centroid)] = []
                         clusters[str(centroid)].append(point)
                 elif self.getDistance(centroid,point) < distance:
-                    # update distance
+                    # Update distance
                     distance = self.getDistance(centroid,point)
-                    # Remove from previous cluster
+                    # Remove point from previous cluster
                     for value in clusters.values():
                         if point in value:
                             value.remove(point)
-                    # Add to new cluster
+                    # Add point to new cluster
                     try:
                         clusters[str(centroid)].append(point)
-                    except KeyError:
+                    except KeyError: # Initialize centroid in the dictionary
                         clusters[str(centroid)] = []
                         clusters[str(centroid)].append(point)
 
@@ -114,12 +99,6 @@ class clustering:
             print(np.round(self.centroids,3))
         else:
             self.llyod()  
-
-    def initCluster(self):
-        arr = []
-        for i in range(self.M):
-            arr.append([])
-        return arr
 
     def getDistance(self,arr0,arr1) -> float:
         x = np.array(arr0)
