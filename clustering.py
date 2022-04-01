@@ -1,3 +1,4 @@
+from dis import dis
 import math
 import sys
 import numpy as np
@@ -30,7 +31,7 @@ class clustering:
                                     )
                                 )
                             )
-                for x in range(self.K+1,len(lines)):
+                for x in range(1,len(lines)):
                     self.data.append(
                             list(
                                 map(
@@ -38,7 +39,6 @@ class clustering:
                                     )
                                 )
                             )
-                print(self.centroids)
         except IndexError:
             print("Oops! You forgot to input a file name!")
         except FileNotFoundError:
@@ -58,9 +58,42 @@ class clustering:
         if centroids aren't the same run it back
         '''
         # Centroid to cluster
-        clusters = {}
-        test = []
-        self.getDistance(self.centroids[0],self.data[0])
+        change = False
+        tempCluster = self.centroids[:]
+        clusters = dict()
+        for point in self.data:
+            distance = 0
+            for centroid in self.centroids:
+                if distance == 0:
+                    distance = self.getDistance(centroid,point)
+                    try:
+                        clusters[str(centroid)].append(point)
+                    except KeyError:
+                        clusters[str(centroid)] = []
+                        clusters[str(centroid)].append(point)
+                elif self.getDistance(centroid,point) < distance:
+                    # Remove from previous cluster
+                    for value in clusters.values():
+                        if point in value:
+                            value.remove(point)
+                    # Add to new cluster
+                    try:
+                        clusters[str(centroid)].append(point)
+                    except KeyError:
+                        clusters[str(centroid)] = []
+                        clusters[str(centroid)].append(point)
+        # Cluster to centroid
+        for i,centriod in enumerate(self.centroids):
+            try:
+                self.centroids[i] = np.mean(clusters[str(centriod)],axis = 0)
+            except KeyError:
+                pass
+        if (np.array(tempCluster) == np.array(self.centroids)).all():
+            print(np.round(self.centroids,3))
+        else:
+            self.llyod()  
+                    
+
 
     def getDistance(self,arr0,arr1) -> float:
         x = np.array(arr0)
@@ -75,9 +108,6 @@ class clustering:
             accumulator = accumulator + val
         distance = math.sqrt(accumulator)
         return distance
-
-        
-
 
     def run(self):
         self.llyod()
