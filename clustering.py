@@ -55,7 +55,7 @@ class clustering:
 
             Clusters to centroid
             - Compute new centroids from the points in their cluster
-                - Find the median
+                - Find the mean
 
             if centroids aren't the same run it back
         '''
@@ -91,12 +91,12 @@ class clustering:
         # Cluster to centroid
         for i,centriod in enumerate(self.centroids):
             try:
-                self.centroids[i] = np.mean(clusters[str(centriod)],axis = 0)
+                self.centroids[i] = np.round(np.mean(clusters[str(centriod)],axis = 0),3)
             except KeyError:
                 pass
         if (np.array(prevCent) == np.array(self.centroids)).all():
             # Clusters have been sorted
-            print(np.round(self.centroids,3))
+            self.viewCentroids()
         else:
             self.llyod()  
 
@@ -113,6 +113,10 @@ class clustering:
             accumulator = accumulator + val
         distance = math.sqrt(accumulator)
         return distance
+
+    def viewCentroids(self):
+        for points in self.centroids:
+            print(*points,sep = " ")
 
     def run(self):
         self.llyod()
